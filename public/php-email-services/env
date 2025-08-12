@@ -1,0 +1,9 @@
+RABBITMQ_HOST=localhost
+RABBITMQ_PORT=5672
+RABBITMQ_USER=guest
+RABBITMQ_PASS=guest
+MAIL_HOST=smtp-mail.outlook.com
+MAIL_USERNAME=mail@mail.com
+MAIL_PASSWORD='password'
+MAIL_FROM_NAME='admin_mail'
+MAIL_FROM_EMAIL=mail@mail.com
