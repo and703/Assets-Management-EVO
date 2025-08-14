@@ -9,9 +9,11 @@ $GLOBALS['api_config'] = [
   'CORS_ORIG' => getenv('CORS_ORIG') ?: '*',
   'API_TOKEN' => getenv('API_TOKEN') ?: '',   // empty = auth disabled
   'RATE_PER_MIN' => (int)(getenv('RATE_PER_MIN') ?: 120),
-  'ALLOWED_TABLES' => [ // allow-list (add/remove here)
-    'assets','asset_audits','api_logs','api_tokens','users','roles','permissions',
-    'role_permissions','settings','tag_data','email_templates','activity_logs'
+  'ALLOWED_TABLES' => [
+    'assets','asset_audits','api_logs','api_tokens','users','roles',
+    'permissions','role_permissions','settings','tag_data','email_templates',
+    'activity_logs'
   ],
+  // JSON columns that need encoding/decoding
   'JSON_COLUMNS' => [ 'asset_audits' => ['changes'] ],
 ];
