@@ -38,3 +38,6 @@ $router->add('GET', '/api/v1/assets/barcode/{barcode}', fn($req,$res)=> (new Ass
 // Assets update by barcode (WRITE)
 $router->add('PATCH', '/api/v1/assets/barcode/{barcode}', fn($req,$res)=> (new AssetsController($req,$res))->updateByBarcodePartial($req->param('barcode')));
 $router->add('PUT',   '/api/v1/assets/barcode/{barcode}', fn($req,$res)=> (new AssetsController($req,$res))->updateByBarcodeFull($req->param('barcode')));
+
+// Bulk by query (PATCH)
+$router->add('PATCH', '/api/v1/{table}/bulk-query', fn($req,$res)=> (new BulkController($req,$res))->updateByQuery($req->param('table')));
