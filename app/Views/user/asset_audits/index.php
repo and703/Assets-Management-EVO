@@ -69,7 +69,7 @@ $(function () {
         },
         columns: [
             { data: 'id', width:'6%' },
-            { data: row => row.user_id ?? 'System' },
+            { data: 'user_display', defaultContent: 'System' },
             { data: 'changed_at' },
             {
                 data: 'changes', width:'100%',

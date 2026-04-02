@@ -27,10 +27,22 @@ class AssetAuditController extends AdminBaseController
     // GET /assets/{id}/audits/data   → returns fresh audits as JSON
     public function data($assetId)
     {
-        $audits = (new AssetAuditModel())
-                    ->where('asset_id', $assetId)
-                    ->orderBy('changed_at', 'desc')
-                    ->findAll();
+        $db = \Config\Database::connect();
+        
+        $audits = $db->table('asset_audits')
+                    ->select('asset_audits.*, users.name as user_name')
+                    ->join('users', 'users.id = asset_audits.user_id', 'left')
+                    ->where('asset_audits.asset_id', $assetId)
+                    ->orderBy('asset_audits.changed_at', 'desc')
+                    ->get()
+                    ->getResultArray();
+
+        // Add user_display field for easier viewing
+        foreach ($audits as &$audit) {
+            $audit['user_display'] = $audit['user_id'] > 0 && $audit['user_name'] 
+                ? ($audit['user_name'] . ' #' . $audit['user_id'])
+                : 'System';
+        }
 
         return $this->response->setJSON($audits);
     }

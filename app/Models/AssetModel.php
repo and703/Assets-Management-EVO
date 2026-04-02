@@ -49,7 +49,7 @@ class AssetModel extends Model
         $ids = is_array($data['id']) ? $data['id'] : [$data['id']];
 
         $auditModel = new \App\Models\AssetAuditModel();
-        $userId     = session('user_id') ?? null;           // adjust to your auth lib
+        $userId     = logged('id') ?? null;           // Use proper auth helper
         $now        = date('Y-m-d H:i:s');
 
         foreach ($ids as $id) {
