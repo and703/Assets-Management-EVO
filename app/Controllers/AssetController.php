@@ -150,6 +150,30 @@ class AssetController extends AdminBaseController
             $data['last_scan'] = null;
         }
 
+        // Log changed fields for auditing before save.
+        $changes = [];
+        foreach ($data as $key => $new) {
+            if (! array_key_exists($key, $original)) {
+                continue;
+            }
+            $old = $original[$key];
+            if ((string) $old === (string) $new) {
+                continue;
+            }
+            $changes[$key] = ['old' => $old, 'new' => $new];
+        }
+
+        if (! empty($changes)) {
+            $entries = array_map(function ($field, $values) {
+                $old = $values['old'] === null ? 'NULL' : $values['old'];
+                $new = $values['new'] === null ? 'NULL' : $values['new'];
+                return "$field: $old -> $new";
+            }, array_keys($changes), $changes);
+
+            $desc = 'Asset #'.$id.' updated by '.logged('name').': '.implode('; ', $entries);
+            model('App\Models\ActivityLogModel')->add($desc, logged('id'));
+        }
+
         // Allow quantity edits to propagate per‑piece rows? For now, just update.
         $assetModel->update($id, $data);
 
@@ -257,6 +281,25 @@ class AssetController extends AdminBaseController
 
                     if (! empty($update)) {
                         $update['updated_at'] = date('Y-m-d H:i:s');
+
+                        // capture asset changes in activity log for auditing
+                        $diffPairs = [];
+                        foreach ($update as $column => $newValue) {
+                            if ($column === 'updated_at') {
+                                continue;
+                            }
+                            $oldValue = $existing[$column] ?? null;
+                            if ((string) $oldValue === (string) $newValue) {
+                                continue;
+                            }
+                            $diffPairs[] = "$column: $oldValue -> $newValue";
+                        }
+
+                        if (! empty($diffPairs)) {
+                            $msg = 'Asset #'.$existing['id'].' updated by '.logged('name').': '.implode('; ', $diffPairs);
+                            model('App\\Models\\ActivityLogModel')->add($msg, logged('id'));
+                        }
+
                         $assetModel->update($existing['id'], $update);
                     }
 

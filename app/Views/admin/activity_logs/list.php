@@ -51,11 +51,18 @@
                 <div class="col-sm-4">
                   <div class="form-group">
                     <label for="Filter-IpAddress"><?php echo lang('App.activity_ip_address') ?> </label>
-                    <input type="text" name="ip" id="Filter-IpAddress" onchange="$(this).parents('form').submit();" class="form-control" value="<?php echo get('ip') ?>" placeholder="Search by Ip Addres" />
+                    <input type="text" name="ip" id="Filter-IpAddress" onchange="$(this).parents('form').submit();" class="form-control" value="<?php echo esc(get('ip')) ?>" placeholder="Search by Ip Addres" />
                   </div>
                 </div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="Filter-Asset">Asset ID</label>
+                    <input type="number" name="asset" id="Filter-Asset" onchange="$(this).parents('form').submit();" class="form-control" value="<?php echo esc(get('asset')) ?>" placeholder="Asset ID" />
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
                   <div class="form-group">
                     <label for="Filter-User"><?php echo lang('App.user') ?></label>
                     <select name="user" id="Filter-User" onchange="$(this).parents('form').submit();" class="form-control select2">
@@ -86,7 +93,9 @@
         <thead>
           <tr>
             <th><?php echo lang('App.id') ?></th>
+            <th>Asset ID</th>
             <th><?php echo lang('App.activity_ip_address') ?></th>
+            <th><?php echo lang('App.user') ?></th>
             <th><?php echo lang('App.activity_message') ?></th>
             <th><?php echo lang('App.activity_datetime') ?></th>
             <th><?php echo lang('App.action') ?></th>
@@ -97,7 +106,22 @@
           <?php foreach ($activity_logs as $row): ?>
             <tr>
               <td width="60"><?php echo $row->id ?></td>
+              <td>
+                <?php
+                  if (!empty($row->asset_id)) {
+                      echo '<a href="'.url('activityLogs/index?asset='.$row->asset_id).'">'.esc($row->asset_id).'</a>';
+                  } else {
+                      echo '—';
+                  }
+                ?>
+              </td>
               <td><?php echo !empty($row->ip_address)?'<a href="'.url('activityLogs/index?ip='.urlencode($row->ip_address)).'">'.$row->ip_address.'</a>':'N.A' ?></td>
+              <td>
+                <?php
+                  $logUser = model('App\Models\UserModel')->getById($row->user);
+                  echo $row->user > 0 && $logUser ? esc($logUser->name) . ' #' . esc($logUser->id) : 'System';
+                ?>
+              </td>
               <td>
                 <a href="<?php echo url('activityLogs/view/'.$row->id) ?>"><?php echo $row->title ?></a>
               </td>

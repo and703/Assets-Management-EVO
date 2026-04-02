@@ -14,22 +14,30 @@ class ActivityLogs extends AdminBaseController
 	{
         $this->permissionCheck('activity_log_list');
 		$ip = !empty(get('ip')) ? urldecode(get('ip')) : false;
-		$user = !empty(get('user')) ? urldecode(get('user')) : false;
+		$user = !empty(get('user')) ? (int) get('user') : false;
+		$assetId = !empty(get('asset')) ? (int) get('asset') : false;
 
-		$arg = [];
+		$activityModel = new ActivityLogModel();
+		$query = $activityModel;
 
-		if($ip)
-			$arg['ip_address'] = $ip;
+		if ($ip) {
+			$query = $query->where('ip_address', $ip);
+		}
 
-		if($user)
-			$arg['user'] = $user;
+		if ($user) {
+			$query = $query->where('user', $user);
+		}
 
-		$activity_logs = (new ActivityLogModel)->getByWhere($arg, [
-			'order' => [ 'id', 'desc' ]
-		]);
+		if ($assetId) {
+			$query = $query->where('asset_id', $assetId);
+		}
+
+		$activity_logs = $query->orderBy('id', 'desc')->findAll();
+
 		$filter_ip = $ip;
 		$filter_user = $user;
-		return  view('admin/activity_logs/list', compact('activity_logs', 'filter_ip', 'filter_user'));
+		$filter_asset = $assetId;
+		return  view('admin/activity_logs/list', compact('activity_logs', 'filter_ip', 'filter_user', 'filter_asset'));
 
 	}
 
