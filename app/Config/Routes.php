@@ -35,11 +35,11 @@ $routes->get('/',                           'Dashboard::index');
 $routes->get ('assets/data',                'AssetController::data');            // JSON data for DataTables
 $routes->get ('assets/',                    'AssetController::index');           // list
 $routes->get ('assets/create',              'AssetController::create');          // form
-$routes->post('assets',                     'AssetController::store');           // save new
+$routes->post('assets/store',               'AssetController::store');           // save new
 $routes->get ('assets/(:num)',              'AssetController::show/$1');         // detail
 $routes->get ('assets/(:num)/edit',         'AssetController::edit/$1');         // edit form
 $routes->put ('assets/(:num)',              'AssetController::update/$1');       // update
-$routes->delete('assets/(:num)',            'AssetController::destroy/$1');      // delete
+$routes->get ('assets/(:num)/destroy',      'AssetController::destroy/$1');      // delete
 $routes->post('/import',                    'AssetController::importExcel');     // import from Excel
 // routes->post('api/rfid',                 'Api\RfidController::log');          // apply auth filter if you have one
 $routes->get('assets/(:num)/audits',        'AssetAuditController::index/$1');

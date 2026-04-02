@@ -60,6 +60,7 @@ class AssetController extends AdminBaseController
     // Detailed single asset view
     public function show(int $id)
     {
+        $this->permissionCheck('page_assets');
         $asset = $this->assets->find($id);
         if (!$asset) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Asset not found');
@@ -79,10 +80,8 @@ class AssetController extends AdminBaseController
     // Store new asset row
     public function store()
     {
+        $this->permissionCheck('page_assets');
         $input = $this->request->getPost();
-        if (! $this->validate($this->validationRules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
 
         // auto EPC per-piece logic even for manual create (qty default 1)
         $qty = (int) ($input['quantity'] ?? 1);
@@ -98,7 +97,7 @@ class AssetController extends AdminBaseController
                 'asset_class_desc'  => $input['asset_class_desc'] ?? null,
                 'category'          => $input['category'] ?? null,
                 'asset_description' => $input['asset_description'],
-                'quantity'          => 1,
+                'quantity'          => $qty,
                 'uom'               => $input['uom'] ?? null,
                 'po'                => $input['po'] ?? null,
                 'location'          => $input['location'] ?? null,
@@ -108,7 +107,7 @@ class AssetController extends AdminBaseController
             ];
         }
         $this->assets->insertBatch($batch);
-        return redirect()->to('/assets')->with('message', 'Asset(s) created');
+        return redirect()->to('')->with('message', 'Asset(s) created');
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -116,6 +115,7 @@ class AssetController extends AdminBaseController
     // ──────────────────────────────────────────────────────────────
     public function edit(int $id)
     {
+        $this->permissionCheck('page_assets');
         $asset = $this->assets->find($id);
         if (!$asset) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Asset not found');
@@ -127,12 +127,13 @@ class AssetController extends AdminBaseController
 
     public function update(int $id)
     {
+        $this->permissionCheck('page_assets');
         $assetModel = new AssetModel();
 
         // ---- original row (to detect location move) ----
         $original = $assetModel->find($id);
         if (! $original) {
-            return redirect()->to('')->with('error', 'Asset not found');
+            return redirect()->to('')->with('error', 'Asset '.$id.' not found');
         }
 
         // Validation rules live in the model for reuse
@@ -152,7 +153,7 @@ class AssetController extends AdminBaseController
         // Allow quantity edits to propagate per‑piece rows? For now, just update.
         $assetModel->update($id, $data);
 
-        return redirect()->to('')->with('message', 'Asset updated');
+        return redirect()->to('')->with('message', 'Asset '.$id.' updated');
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -160,10 +161,11 @@ class AssetController extends AdminBaseController
     // ──────────────────────────────────────────────────────────────
     public function destroy(int $id)
     {
+        $this->permissionCheck('page_assets');
         if ($this->assets->delete($id)) {
-            return redirect()->to('/assets')->with('message', 'Asset deleted');
+            return redirect()->to('')->with('message', 'Asset '.$id.' deleted');
         }
-        return redirect()->to('/assets')->with('error', 'Unable to delete asset');
+        return redirect()->to('')->with('error', 'Unable to delete asset '.$id);
     }
 
     //------------------------------------------------------------------

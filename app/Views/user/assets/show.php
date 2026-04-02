@@ -45,7 +45,7 @@
     
     <?php if ( hasPermissions('company_settings') ): ?>
       <a href="<?= base_url('assets/' . $asset['id'] . '/audits') ?>" class="btn btn-default"><i class="fas fa-list"></i>Logs Audit</a>
-      <a href="<?= base_url('assets/' . $asset['id'] . '/delete') ?>" class="btn btn-danger"><i class="fa fa-trash me-1"></i>Delete</a>
+      <a href="<?= base_url('assets/' . $asset['id'] . '/destroy') ?>" class="btn btn-danger"><i class="fa fa-trash me-1"></i>Delete</a>
     <?php endif; ?>
 </br>
 </br>

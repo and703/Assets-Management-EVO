@@ -7,9 +7,9 @@ class Router {
 
   public function use(MiddlewareInterface $mw){ $this->middleware[] = $mw; }
 
-  public function add(string $method, string $pattern, callable $handler){
+  public function add(string $method, string $pattern, callable $handler, array $middleware = []){
     $regex = '#^' . preg_replace('#\{([a-zA-Z_][a-zA-Z0-9_]*)\}#','(?P<$1>[^/]+)', rtrim($pattern,'/')) . '/?$#';
-    $this->routes[] = [$method, $regex, $handler];
+    $this->routes[] = [$method, $regex, $handler, $middleware];
   }
 
   public function dispatch(){
@@ -26,10 +26,18 @@ class Router {
   }
 
   private function match(Request $req, Response $res){
-    foreach ($this->routes as [$m,$rx,$h]) {
+    foreach ($this->routes as [$m,$rx,$h,$routeMw]) {
       if ($req->method !== strtoupper($m)) continue;
       if (preg_match($rx, $req->path, $mch)) {
         foreach ($mch as $k=>$v) if (!is_int($k)) $req->params[$k]=$v;
+        if ($routeMw) {
+          $pipeline = array_reduce(
+            array_reverse($routeMw),
+            fn($next, $mw) => fn($req,$res) => $mw->handle($req,$res,$next),
+            fn($req,$res) => $h($req,$res)
+          );
+          return $pipeline($req,$res);
+        }
         return $h($req,$res);
       }
     }

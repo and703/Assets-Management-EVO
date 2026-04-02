@@ -158,7 +158,7 @@ $(function () {
                             <a href="<?= base_url('assets') ?>/${id}/edit" class="btn btn-sm btn-warning me-1"><i class="fas fa-edit"></i></a>
                             <?php if ( hasPermissions('company_settings') ): ?>
                             <a href="<?= base_url('assets') ?>/${id}/audits" class="btn btn-sm btn-default me-1"><i class="fas fa-list"></i></a>
-                            <a href="<?= base_url('assets') ?>/${id}/delete" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                            <a href="<?= base_url('assets') ?>/${id}/destroy" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                             <?php endif; ?>
                             `;
                     }

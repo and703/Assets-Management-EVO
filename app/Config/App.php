@@ -23,7 +23,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'http://103.125.212.194';
+    public $baseURL = 'https://assets.evos7.com';
 
     /**
      * --------------------------------------------------------------------------

@@ -8,6 +8,7 @@ $GLOBALS['api_config'] = [
   'DB_PASS'   => getenv('DB_PASS') ?: 'Pirelli889900--',
   'CORS_ORIG' => getenv('CORS_ORIG') ?: '*',
   'API_TOKEN' => getenv('API_TOKEN') ?: '',   // empty = auth disabled
+  'API_KEY'   => getenv('API_KEY')   ?: 'Pirelli,PT.EvoluzioneTyres,AnD888',   // SHA256 hash of passphrase; empty = api_key auth disabled
   'RATE_PER_MIN' => (int)(getenv('RATE_PER_MIN') ?: 120),
   'ALLOWED_TABLES' => [
     'assets','asset_audits','api_logs','api_tokens','users','roles',

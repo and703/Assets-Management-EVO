@@ -13,7 +13,7 @@
         </div>
     <?php endif; ?>
 
-    <form action="<?= base_url('assets') ?>" method="post" class="row g-3">
+    <form action="<?= base_url('assets/store') ?>" method="post" class="row g-3">
         <?= csrf_field() ?>
         <div class="col-md-4">
             <label class="form-label">Asset Number *</label>

@@ -4,8 +4,10 @@ use Core\Request;
 use Core\Response;
 use Controllers\GenericController;
 use Controllers\AssetsController;
+use Controllers\AssetsDataController;
 use Controllers\BulkController;
 use Controllers\UtilityController;
+use Middleware\ApiKeyMiddleware;
 
 /** @var Router $router */
 
@@ -13,6 +15,16 @@ use Controllers\UtilityController;
 $router->add('GET', '/api/v1/health', function(Request $req, Response $res){
   return $res->ok(['status'=>'ok','time'=>date('c')]);
 });
+
+$auth = [new ApiKeyMiddleware()];
+
+// Assets CRUD — API key required
+$router->add('GET',    '/api/v1/assets/data',       fn($req,$res)=> (new AssetsDataController($req,$res))->list(),                    $auth);
+$router->add('POST',   '/api/v1/assets/data',       fn($req,$res)=> (new AssetsDataController($req,$res))->create(),                  $auth);
+$router->add('GET',    '/api/v1/assets/data/{id}',  fn($req,$res)=> (new AssetsDataController($req,$res))->show((int)$req->param('id')),   $auth);
+$router->add('PUT',    '/api/v1/assets/data/{id}',  fn($req,$res)=> (new AssetsDataController($req,$res))->replace((int)$req->param('id')), $auth);
+$router->add('PATCH',  '/api/v1/assets/data/{id}',  fn($req,$res)=> (new AssetsDataController($req,$res))->update((int)$req->param('id')),  $auth);
+$router->add('DELETE', '/api/v1/assets/data/{id}',  fn($req,$res)=> (new AssetsDataController($req,$res))->delete((int)$req->param('id')),  $auth);
 
 // Generic CRUD
 $router->add('GET',  '/api/v1/{table}',        fn($req,$res)=> (new GenericController($req,$res))->list($req->param('table')));
